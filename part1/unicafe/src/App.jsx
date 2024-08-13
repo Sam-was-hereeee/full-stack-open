@@ -17,24 +17,36 @@ const Result = ({name, count}) => {
 }
 
 const Statistics = ({review}) => {
+    console.log("rendering statistics")
     const getReviewSum = () => Object.values(review)
         .reduce((acc, current) => {return acc+current;}, 0);
 
     const getAverageReview = () => (review.good - review.bad)/getReviewSum();
-    return (
-        <>
-            <h1>statistics</h1>
-            <Result name={'good'} count={review.good}/>
-            <Result name={'neutral'} count={review.neutral}/>
-            <Result name={'bad'} count={review.bad}/>
-            <Result name={"all"} count={getReviewSum()}/>
-            <Result name={'average'} count={getAverageReview()}/>
-            <Result name={'positive'} count={review.good / getReviewSum()}/>
-        </>
-    )
+    if (!getReviewSum()) {
+        return (
+            <>
+                <h1>Statistics</h1>
+                <p>No feedback given.</p>
+            </>
+        )
+    }
+    else {
+        return (
+            <>
+                <h1>statistics</h1>
+                <Result name={'good'} count={review.good}/>
+                <Result name={'neutral'} count={review.neutral}/>
+                <Result name={'bad'} count={review.bad}/>
+                <Result name={"all"} count={getReviewSum()}/>
+                <Result name={'average'} count={getAverageReview()}/>
+                <Result name={'positive'} count={review.good / getReviewSum()}/>
+            </>
+        )
+    }
 }
 
 const App = () => {
+    console.log("Rendering App")
     // save clicks of each button to its own state
     const [review, setReview] = useState({
         good: 0, neutral: 0, bad:0
