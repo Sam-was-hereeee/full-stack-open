@@ -16,6 +16,24 @@ const Result = ({name, count}) => {
     )
 }
 
+const Statistics = ({review}) => {
+    const getReviewSum = () => Object.values(review)
+        .reduce((acc, current) => {return acc+current;}, 0);
+
+    const getAverageReview = () => (review.good - review.bad)/getReviewSum();
+    return (
+        <>
+            <h1>statistics</h1>
+            <Result name={'good'} count={review.good}/>
+            <Result name={'neutral'} count={review.neutral}/>
+            <Result name={'bad'} count={review.bad}/>
+            <Result name={"all"} count={getReviewSum()}/>
+            <Result name={'average'} count={getAverageReview()}/>
+            <Result name={'positive'} count={review.good / getReviewSum()}/>
+        </>
+    )
+}
+
 const App = () => {
     // save clicks of each button to its own state
     const [review, setReview] = useState({
@@ -28,10 +46,7 @@ const App = () => {
         setReview(newReview);
     };
 
-    const getReviewSum = () => Object.values(review)
-        .reduce((acc, current) => {return acc+current;}, 0);
 
-    const getAverageReview = () => (review.good - review.bad)/getReviewSum();
 
     return (
         <>
@@ -39,13 +54,7 @@ const App = () => {
             <Button handleClick={()=>addReview('good')} text={"good"} />
             <Button handleClick={()=>{addReview('neutral')}} text={'neutral'}/>
             <Button handleClick={()=>{addReview('bad')}} text={'bad'}/>
-            <h1>statistics</h1>
-            <Result name={'good'} count={review.good}/>
-            <Result name={'neutral'} count={review.neutral}/>
-            <Result name={'bad'} count={review.bad}/>
-            <Result name={"all"} count={getReviewSum()}/>
-            <Result name={'average'} count={getAverageReview()}/>
-            <Result name={'positive'} count={review.good/getReviewSum()}/>
+            <Statistics review={review} />
         </>
     )
 }
