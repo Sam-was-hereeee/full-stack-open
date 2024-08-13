@@ -11,7 +11,7 @@ const Button = ({ handleClick, text}) => {
 const Result = ({name, count}) => {
     return (
         <>
-            <p>{name}{count}</p>
+            <p>{name} {count}</p>
         </>
     )
 }
@@ -28,6 +28,11 @@ const App = () => {
         setReview(newReview);
     };
 
+    const getReviewSum = () => Object.values(review)
+        .reduce((acc, current) => {return acc+current;}, 0);
+
+    const getAverageReview = () => (review.good - review.bad)/getReviewSum();
+
     return (
         <>
             <h1>give feedback</h1>
@@ -38,6 +43,9 @@ const App = () => {
             <Result name={'good'} count={review.good}/>
             <Result name={'neutral'} count={review.neutral}/>
             <Result name={'bad'} count={review.bad}/>
+            <Result name={"all"} count={getReviewSum()}/>
+            <Result name={'average'} count={getAverageReview()}/>
+            <Result name={'positive'} count={review.good/getReviewSum()}/>
         </>
     )
 }
