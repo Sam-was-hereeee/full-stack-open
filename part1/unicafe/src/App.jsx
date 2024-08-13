@@ -8,10 +8,10 @@ const Button = ({ handleClick, text}) => {
     )
 };
 
-const Result = ({name, count}) => {
+const StatisticsLine = ({text, value}) => {
     return (
         <>
-            <p>{name} {count}</p>
+            <tr><td>{text}</td><td>{value}</td></tr>
         </>
     )
 }
@@ -34,12 +34,17 @@ const Statistics = ({review}) => {
         return (
             <>
                 <h1>statistics</h1>
-                <Result name={'good'} count={review.good}/>
-                <Result name={'neutral'} count={review.neutral}/>
-                <Result name={'bad'} count={review.bad}/>
-                <Result name={"all"} count={getReviewSum()}/>
-                <Result name={'average'} count={getAverageReview()}/>
-                <Result name={'positive'} count={review.good / getReviewSum()}/>
+                <table>
+                    <tbody>
+                        <StatisticsLine text={'good'} value={review.good}/>
+                        <StatisticsLine text={'neutral'} value={review.neutral}/>
+                        <StatisticsLine text={'bad'} value={review.bad}/>
+                        <StatisticsLine text={"all"} value={getReviewSum()}/>
+                        <StatisticsLine text={'average'} value={getAverageReview()}/>
+                        <StatisticsLine text={'positive'} value={(review.good / getReviewSum())+'%'}/>
+                    </tbody>
+                </table>
+
             </>
         )
     }
