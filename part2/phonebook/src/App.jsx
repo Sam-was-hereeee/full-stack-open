@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import phonebookService from "./service/phonebook-service.jsx";
 
 const SearchBar = ( {search, setSearch} ) => {
     return (
@@ -42,11 +42,9 @@ const PeopleDisplay = ({search, persons}) => {
 
 const App = () => {
     useEffect(() => {
-        axios.get('http://localhost:3001/persons')
-            .then((res) => {
-                setPersons(res.data)
-            })
-    }, [])
+        phonebookService.getAll().then(res=>{setPersons(res);console.log(res)});
+
+    }, []);
     const [persons, setPersons] = useState([
         {name: 'Arto Hellas', number: '040-123456', id: 1},
         {name: 'Ada Lovelace', number: '39-44-5323523', id: 2},
@@ -62,7 +60,7 @@ const App = () => {
         newNumber: newNumber,
         setNewNumber: setNewNumber,
         setNewName: setNewName
-    }
+    };
 
     const handleNewName = (e) => {
         e.preventDefault();
@@ -74,8 +72,8 @@ const App = () => {
             name: newName,
             number: newNumber
         };
-        axios.post('http://localhost:3001/persons', newPersonObj)
-            .then((res) => {setPersons(persons.concat(res.data))});
+
+        phonebookService.add(newPersonObj).then(res=>{setPersons(persons.concat(res))});
         setNewName('');
         setNewNumber('');
     }
