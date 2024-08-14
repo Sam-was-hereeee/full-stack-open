@@ -8,6 +8,10 @@ const App = () => {
 
     const handleNewName = (e) => {
         e.preventDefault();
+        if (persons.map(el=>el.name).includes(newName)) {
+            alert(`${newName} is already in the book.`);
+            return;
+        }
         const newPersonObj = {
             name: newName
         };
