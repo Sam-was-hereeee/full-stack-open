@@ -35,7 +35,7 @@ const Total = (props) => {
     )
 }
 
-const App = () => {
+const App = ({counter}) => {
     const course = {
         name: 'Half Stack application development',
         parts: [
@@ -59,6 +59,7 @@ const App = () => {
             <Header course={course.name}></Header>
             <Content parts={course.parts}></Content>
             <Total parts={course.parts}></Total>
+            <p>Counter: {counter}</p>
         </div>
     )
 }
