@@ -30,11 +30,21 @@ const AddPhoneField = ( {onSubmit, info} ) => {
     )
 }
 
-const PeopleDisplay = ({search, persons}) => {
+const Person = ({person, delFunc}) => {
+
+    return (
+        <>
+            <p key={person.name}>{person.name} {person.number}</p>
+            <button onClick={()=>{delFunc(person)}}>Delete</button>
+        </>
+    )
+}
+
+const PeopleDisplay = ({search, persons, delFunc}) => {
     return (
         <>
             {persons.filter((el) => el.name.toLowerCase().includes(search.toLowerCase())).map((person) =>
-                (<p key={person.name}>{person.name} {person.number}</p>))}
+                (<Person key={person.name} person={person} delFunc={delFunc}/>))}
         </>
 
     )
@@ -78,6 +88,12 @@ const App = () => {
         setNewNumber('');
     }
 
+    const onDelete = (person) => {
+        if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+            phonebookService.delAndReturnAll(person.id).then(res=>{setPersons(res)});
+        }
+    }
+
     return (
         <div>
             <h2>Phonebook</h2>
@@ -85,7 +101,7 @@ const App = () => {
 
             <AddPhoneField onSubmit={handleNewName} info={infoAndSet}/>
             <h2>Numbers</h2>
-            <PeopleDisplay persons={persons} search={search}/>
+            <PeopleDisplay delFunc={onDelete} persons={persons} search={search}/>
 
         </div>
     )

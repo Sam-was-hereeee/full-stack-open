@@ -9,4 +9,9 @@ const add = (newPerson) => {
     return axios.post('http://localhost:3001/persons', newPerson).then(res => res.data);
 }
 
-export default {getAll, add}
+const delAndReturnAll = (id) => {
+    return axios.delete(`http://localhost:3001/persons/${id}`)
+        .then(()=> getAll());
+}
+
+export default {getAll, add, delAndReturnAll}
