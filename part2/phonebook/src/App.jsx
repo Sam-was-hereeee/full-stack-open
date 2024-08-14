@@ -16,11 +16,11 @@ const AddPhoneField = ( {onSubmit, info} ) => {
                 <div>
                     name: <input value={info.newName} onChange={(e) => {
                     info.setNewName(e.target.value);
-                }}/>
+                }} required/>
                 </div>
                 <div>number: <input type='number' value={info.newNumber} onChange={(e) => {
                     info.setNewNumber(e.target.value)
-                }}/>
+                }} required/>
                 </div>
                 <div>
                     <button type="submit">add</button>
@@ -74,8 +74,13 @@ const App = () => {
 
     const handleNewName = (e) => {
         e.preventDefault();
-        if (persons.map(el=>el.name).includes(newName)) {
-            alert(`${newName} is already in the book.`);
+        const oldPerson = persons.find(person => person.name === newName)
+        if (oldPerson) {
+            // if user decides to replace number, updates server and content
+            if (window.confirm(`${newName} is already in the book, replace the number?`)) {
+            phonebookService.update(oldPerson.id, {...oldPerson, number: newNumber})
+                .then(res => {setPersons(persons.map(person => person.id===oldPerson.id ? res : person))})
+            }
             return;
         }
         const newPersonObj = {
