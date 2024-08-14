@@ -1,15 +1,56 @@
 import { useState } from 'react'
 
+const SearchBar = ( {search, setSearch} ) => {
+    return (
+        <div>Search: <input type="text" value={search} onChange={(e) => {
+            setSearch(e.target.value)}}/>
+        </div>
+    )
+}
+
+const AddPhoneField = ( {onSubmit, info} ) => {
+    return (
+        <form onSubmit={onSubmit}>
+            <div>
+                name: <input value={info.newName} onChange={(e) => {
+                info.setNewName(e.target.value);}}/>
+            </div>
+            <div>number: <input type='number' value={info.newNumber} onChange={(e) => {
+                info.setNewNumber(e.target.value)}}/>
+            </div>
+            <div>
+                <button type="submit">add</button>
+            </div>
+        </form>
+    )
+}
+
+const PeopleDisplay = ({search, persons}) => {
+    return (
+        <>
+            {persons.filter((el)=>el.name.toLowerCase().includes(search.toLowerCase())).map((person) =>
+            (<p key={person.name}>{person.name} {person.number}</p>))}
+        </>
+
+    )
+}
+
 const App = () => {
     const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '040-123456', id: 1 },
-        { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-        { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-        { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+        {name: 'Arto Hellas', number: '040-123456', id: 1},
+        {name: 'Ada Lovelace', number: '39-44-5323523', id: 2},
+        {name: 'Dan Abramov', number: '12-43-234345', id: 3},
+        {name: 'Mary Poppendieck', number: '39-23-6423122', id: 4}
     ]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [search, setSearch] = useState('');
+    const infoAndSet = {
+        newName: newName,
+        newNumber: newNumber,
+        setNewNumber: setNewNumber,
+        setNewName: setNewName
+    }
 
     const handleNewName = (e) => {
         e.preventDefault();
@@ -28,29 +69,15 @@ const App = () => {
         setNewNumber('');
     }
 
-    const handleNameChange = (e) => {
-        setNewName(e.target.value);
-    }
-
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>Search: <input type="text" value={search} onChange={(e) => {
-                setSearch(e.target.value)
-            }}/></div>
+            <SearchBar search={search} setSearch={setSearch}/>
 
-            <form onSubmit={handleNewName}>
-                <div>
-                name: <input value={newName} onChange={handleNameChange}/>
-                </div>
-                <div>number: <input type='number' value={newNumber} onChange={(e) =>
-                {setNewNumber(e.target.value)}}/></div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
+            <AddPhoneField onSubmit={handleNewName} info={infoAndSet}/>
             <h2>Numbers</h2>
-            {persons.filter((el)=>el.name.toLowerCase().includes(search)).map((person) => (<p key={person.name}>{person.name} {person.number}</p>))}
+            <PeopleDisplay persons={persons} search={search}/>
+
         </div>
     )
 }
