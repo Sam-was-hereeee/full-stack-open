@@ -11,35 +11,41 @@ const SearchBar = ( {search, setSearch} ) => {
 
 const AddPhoneField = ( {onSubmit, info} ) => {
     return (
-        <form onSubmit={onSubmit}>
-            <div>
-                name: <input value={info.newName} onChange={(e) => {
-                info.setNewName(e.target.value);}}/>
-            </div>
-            <div>number: <input type='number' value={info.newNumber} onChange={(e) => {
-                info.setNewNumber(e.target.value)}}/>
-            </div>
-            <div>
-                <button type="submit">add</button>
-            </div>
-        </form>
+        <>
+            <form onSubmit={onSubmit}>
+                <div>
+                    name: <input value={info.newName} onChange={(e) => {
+                    info.setNewName(e.target.value);
+                }}/>
+                </div>
+                <div>number: <input type='number' value={info.newNumber} onChange={(e) => {
+                    info.setNewNumber(e.target.value)
+                }}/>
+                </div>
+                <div>
+                    <button type="submit">add</button>
+                </div>
+            </form>
+        </>
     )
 }
 
 const PeopleDisplay = ({search, persons}) => {
     return (
         <>
-            {persons.filter((el)=>el.name.toLowerCase().includes(search.toLowerCase())).map((person) =>
-            (<p key={person.name}>{person.name} {person.number}</p>))}
+            {persons.filter((el) => el.name.toLowerCase().includes(search.toLowerCase())).map((person) =>
+                (<p key={person.name}>{person.name} {person.number}</p>))}
         </>
 
     )
 }
 
 const App = () => {
-    useEffect(()=>{
+    useEffect(() => {
         axios.get('http://localhost:3001/persons')
-            .then((res)=>{setPersons(res.data)})
+            .then((res) => {
+                setPersons(res.data)
+            })
     }, [])
     const [persons, setPersons] = useState([
         {name: 'Arto Hellas', number: '040-123456', id: 1},
@@ -66,11 +72,10 @@ const App = () => {
         }
         const newPersonObj = {
             name: newName,
-            number: newNumber,
-            id: persons.reduce((acc, el) =>
-                el.id>acc ? el.id+1 : acc)
+            number: newNumber
         };
-        setPersons(persons.concat(newPersonObj));
+        axios.post('http://localhost:3001/persons', newPersonObj)
+            .then((res) => {setPersons(persons.concat(res.data))});
         setNewName('');
         setNewNumber('');
     }
