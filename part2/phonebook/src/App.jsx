@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react'
 import phonebookService from "./service/phonebook-service.jsx";
+import styles from "./styling/topMessage.module.css"
+import "./main.css"
+
+const TopMessage = ({msg, mode}) => {
+    return (
+        <>
+            <div className={`${styles.topMessage} ${styles[mode]}`}>
+                <p className={styles.content}>{msg}</p>
+            </div>
+        </>
+    )
+}
 
 const SearchBar = ( {search, setSearch} ) => {
     return (
@@ -33,10 +45,10 @@ const AddPhoneField = ( {onSubmit, info} ) => {
 const Person = ({person, delFunc}) => {
 
     return (
-        <>
+        <div className={'person'}>
             <p key={person.name}>{person.name} {person.number}</p>
             <button onClick={()=>{delFunc(person)}}>Delete</button>
-        </>
+        </div>
     )
 }
 
@@ -53,8 +65,11 @@ const PeopleDisplay = ({search, persons, delFunc}) => {
 const App = () => {
     useEffect(() => {
         phonebookService.getAll().then(res=>{setPersons(res);console.log(res)});
-
     }, []);
+    const temporaryTopMsg = (msg) => {
+        setTopMsg(msg);
+        setTimeout(()=> {setTopMsg(defaultMsg)},5000)
+    }
     const [persons, setPersons] = useState([
         {name: 'Arto Hellas', number: '040-123456', id: 1},
         {name: 'Ada Lovelace', number: '39-44-5323523', id: 2},
@@ -63,7 +78,8 @@ const App = () => {
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [search, setSearch] = useState('');
-
+    const defaultMsg = "Welcome to the phonebook";
+    const [topMsg, setTopMsg] = useState(defaultMsg);
 
     const infoAndSet = {
         newName: newName,
@@ -80,6 +96,7 @@ const App = () => {
             if (window.confirm(`${newName} is already in the book, replace the number?`)) {
             phonebookService.update(oldPerson.id, {...oldPerson, number: newNumber})
                 .then(res => {setPersons(persons.map(person => person.id===oldPerson.id ? res : person))})
+                .then(()=>{temporaryTopMsg(`updated ${oldPerson.name}`)})
             }
             return;
         }
@@ -88,19 +105,23 @@ const App = () => {
             number: newNumber
         };
 
-        phonebookService.add(newPersonObj).then(res=>{setPersons(persons.concat(res))});
+        phonebookService.add(newPersonObj)
+            .then(res=>{setPersons(persons.concat(res))})
+            .then(()=>{temporaryTopMsg(`added ${newPersonObj.name}`)});
         setNewName('');
         setNewNumber('');
     }
 
     const onDelete = (person) => {
         if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
-            phonebookService.delAndReturnAll(person.id).then(res=>{setPersons(res)});
+            phonebookService.delAndReturnAll(person.id).then(res=>{setPersons(res)})
+                .then(()=>{temporaryTopMsg(`deleted ${person.name}`)});
         }
     }
 
     return (
-        <div>
+        <div className="App">
+            <TopMessage msg={topMsg} mode={'normal'}/>
             <h2>Phonebook</h2>
             <SearchBar search={search} setSearch={setSearch}/>
 
