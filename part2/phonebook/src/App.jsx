@@ -66,9 +66,9 @@ const App = () => {
     useEffect(() => {
         phonebookService.getAll().then(res=>{setPersons(res);console.log(res)});
     }, []);
-    const temporaryTopMsg = (msg) => {
-        setTopMsg(msg);
-        setTimeout(()=> {setTopMsg(defaultMsg)},5000)
+    const temporaryTopMsg = (msg, mode='normal') => {
+        setTopMsg({msg: msg, mode: mode});
+        setTimeout(()=> {setTopMsg({msg: defaultMsg, mode:'normal'})},5000)
     }
     const [persons, setPersons] = useState([
         {name: 'Arto Hellas', number: '040-123456', id: 1},
@@ -79,7 +79,8 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('');
     const [search, setSearch] = useState('');
     const defaultMsg = "Welcome to the phonebook";
-    const [topMsg, setTopMsg] = useState(defaultMsg);
+    const [topMsg, setTopMsg] = useState({msg:defaultMsg, mode:'normal'});
+
 
     const infoAndSet = {
         newName: newName,
@@ -88,7 +89,7 @@ const App = () => {
         setNewName: setNewName
     };
 
-    const handleNewName = (e) => {
+    const onNewName = (e) => {
         e.preventDefault();
         const oldPerson = persons.find(person => person.name === newName)
         if (oldPerson) {
@@ -115,17 +116,21 @@ const App = () => {
     const onDelete = (person) => {
         if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
             phonebookService.delAndReturnAll(person.id).then(res=>{setPersons(res)})
-                .then(()=>{temporaryTopMsg(`deleted ${person.name}`)});
+                .then(()=>{temporaryTopMsg(`deleted ${person.name}`)})
+                .catch(()=>{
+                    phonebookService.getAll().then(res=>{setPersons(res);console.log(res)});
+                    temporaryTopMsg(`${person.name} already deleted`, 'error');
+                });
         }
     }
 
     return (
         <div className="App">
-            <TopMessage msg={topMsg} mode={'normal'}/>
+            <TopMessage msg={topMsg.msg} mode={topMsg.mode}/>
             <h2>Phonebook</h2>
             <SearchBar search={search} setSearch={setSearch}/>
 
-            <AddPhoneField onSubmit={handleNewName} info={infoAndSet}/>
+            <AddPhoneField onSubmit={onNewName} info={infoAndSet}/>
             <h2>Numbers</h2>
             <PeopleDisplay delFunc={onDelete} persons={persons} search={search}/>
 

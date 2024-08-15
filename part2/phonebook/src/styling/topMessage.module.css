@@ -1,9 +1,11 @@
 .error {
     background-color: indianred;
+    border: 3px solid darkred;
 }
 
 .normal {
     background-color: darkseagreen;
+    border: 3px solid darkgreen;
 }
 
 .topMessage {
@@ -11,7 +13,7 @@
     margin: 20px auto;
     padding: 10px;
     line-height: 1.5rem;
-    border: 3px solid darkgreen;
+
     font-size: 1.5rem;
     height: auto;
     border-radius: 10px;
