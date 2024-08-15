@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import countriesService from './service/restCountriesAPI.jsx'
 
 
@@ -12,7 +12,10 @@ const CountrySearch = ( {search, setSearch} ) => {
 }
 
 const CountryResult = ({keyword,fullArr}) => {
-    const searchResult = fullArr.filter(country => country.toLowerCase().includes(keyword.toLowerCase()))
+    const searchResult = fullArr.filter(country => country.toLowerCase().includes(keyword.toLowerCase()));
+    const [countryInfo, setCountryInfo] = useState({});
+    useEffect(()=>{if (searchResult.length===1) {
+        countriesService.getOneCountry(searchResult[0]).then(el=>{setCountryInfo(el)})}},[searchResult])
     if (!keyword) {
         return (
             <div>Start searching by typing into the search bar</div>
@@ -33,25 +36,35 @@ const CountryResult = ({keyword,fullArr}) => {
         return (
             <div>
                 {searchResult.map((name) => <p key={name}>{name}</p>)}
-                {searchResult.length===1 ? <CountryInfo country={searchResult[0]}/> : <></>}
+                {searchResult.length===1 ? <CountryInfo countryInfo={countryInfo} countryName={searchResult[0]}/> : <></>}
             </div>
         )
     }
 
 }
 
-const CountryInfo = ({country}) => {
+const CountryInfo = ({countryName, countryInfo}) => {
+    if (!Object.keys(countryInfo).length) {
+        console.log('no info')
+        return null;
+    }
+    console.log(countryInfo);
     return (
         <div>
-            <p>{country}</p>
+            <h1>{countryName}</h1>
+            <p>Capital: {countryInfo.capital[0]}</p>
+            <p>Population: {countryInfo.population}</p>
         </div>
-    )
-}
+    );
+    }
+
 
 const App = () => {
     const [fullNameArr, setFullNameArr] = useState([]);
     useEffect(()=>{
-        countriesService.getNameArr().then((res)=>setFullNameArr(res));
+        countriesService.getNameArr().then((res)=>{
+            setFullNameArr(res);
+            console.log('full list retrieved', res)});
     }, []);
     const [search, setSearch] = useState('');
     return (

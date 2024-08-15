@@ -4,9 +4,11 @@ const baseURL = 'https://studies.cs.helsinki.fi/restcountries/';
 
 const getNameArr = () => {
     return axios.get(`${baseURL}/api/all`)
-        .then((res)=>res.data.map((el)=>el.name.common))
-}
+        .then((res)=>res.data.map((el)=>el.name.common));
+};
 
-const getOneCountry = () => {}
+const getOneCountry = (name) => {
+    return axios.get(`${baseURL}/api/name/${name}`).then(res=>res.data);
+};
 
-export default {getNameArr, getOneCountry}
+export default {getNameArr, getOneCountry};
