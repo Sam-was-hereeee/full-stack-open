@@ -13,9 +13,10 @@ const App = () => {
     const [topMsg, setTopMsg] = useState({msg:defaultMsg, mode:'normal'});
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+        setBlogs(blogs);
+        console.log(blogs);
+    })
   }, [])
 
   useEffect(() => {
@@ -71,23 +72,9 @@ const App = () => {
 const Blogs = ( {blogs} )=> {
   return (
       <>
-        <div>
-          <table>
-            <thead>
-            <tr>
-              <th>
-                Blogs
-              </th>
-              <th>Author</th>
-            </tr>
-            </thead>
-            <tbody>
             {blogs.map(blog =>
                 <Blog key={blog.id} blog={blog}/>
             )}
-            </tbody>
-          </table>
-        </div>
       </>
   )
 }
