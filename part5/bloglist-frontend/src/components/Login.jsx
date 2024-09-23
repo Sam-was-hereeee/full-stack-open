@@ -1,7 +1,7 @@
 import {useState} from "react";
 import loginService from '../services/loginService.js'
 
-const Login = ( {setUser} ) => {
+const Login = ( {setUser, tempTopMsg} ) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -12,7 +12,7 @@ const Login = ( {setUser} ) => {
             responseData = await loginService.login({username, password});
             console.log(responseData)
         } catch {
-            console.log("login failed")
+            tempTopMsg({msg: "login failed", mode: "error"})
             return
         }
         setUser(responseData)

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Create = ( {token} ) => {
+const Create = ( {token, tempTopMsg} ) => {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [url, setUrl] = useState("");
@@ -11,7 +11,13 @@ const Create = ( {token} ) => {
         const data = {
             title, author, url, token
         }
-        await blogService.create(data)
+        try {
+            await blogService.create(data)
+            tempTopMsg({msg: `created ${data.title} by ${data.author}`, mode: "normal"})
+        } catch {
+            tempTopMsg({msg: "failed to create blog", mode: "error"})
+        }
+
         setTitle("")
         setAuthor("")
         setUrl("")
