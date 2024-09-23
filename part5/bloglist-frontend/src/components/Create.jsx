@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Create = ( {token, tempTopMsg} ) => {
+const Create = ( {token, tempTopMsg, toggle} ) => {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [url, setUrl] = useState("");
@@ -21,6 +21,7 @@ const Create = ( {token, tempTopMsg} ) => {
         setTitle("")
         setAuthor("")
         setUrl("")
+        toggle.handleToggle()
     }
     return (
         <>

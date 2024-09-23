@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import Create from './components/Create'
 import TopMessage from "./components/TopMessage.jsx";
+import Toggleable from "./components/Toggleable.jsx";
 import blogService from './services/blogs'
 
 const App = () => {
@@ -41,8 +42,8 @@ const App = () => {
       setTimeout(()=>{setTopMsg({msg: defaultMsg, mode: "normal"})},2000)
   }
 
-  console.log('loading app')
-  console.log(user)
+  const createRef = useRef()
+
   if (user) {
     return (
         <>
@@ -51,9 +52,10 @@ const App = () => {
             <div>Logged in as {user.username}</div>
             <button onClick={logout}>logout</button>
             <Blogs blogs={blogs}></Blogs>
-            <Create token={user.token} tempTopMsg={temporaryTopMsg}></Create>
+            <Toggleable showText="Create blog" ref={createRef}>
+                <Create token={user.token} tempTopMsg={temporaryTopMsg} toggle={createRef.current}></Create>
+            </Toggleable>
         </>
-
     )
   }
   return (
